@@ -1,7 +1,7 @@
 module Mention
   class AlertCreator
-    def initialize(account_resource, alert)
-      @account_resource, @alert = account_resource, alert
+    def initialize(connection, alert)
+      @connection, @alert = connection, alert
     end
 
     def created_alert
@@ -14,16 +14,14 @@ module Mention
     end
 
     private
-    attr_reader :account_resource, :alert
+    attr_reader :connection, :alert
 
     def response
-      @response ||= JSON.parse(response_str)
+      @response ||= JSON.parse(http_response)
     end
 
-    def response_str
-      @response_str ||= account_resource['alerts'].post(
-        JSON.generate(request_params),
-        :content_type => 'application/json')
+    def http_response
+      @http_response ||= connection.post('/alerts', JSON.generate(request_params), 'Content-Type' => 'application/json')
     end
 
     def request_params

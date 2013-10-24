@@ -1,9 +1,11 @@
 # Dependencies
 require 'json'
-require 'rest-client'
+require 'net/http'
+require 'uri'
 require 'virtus'
 
 # core entities
+require 'mention/connection'
 require 'mention/account'
 require 'mention/share'
 require 'mention/alert'
