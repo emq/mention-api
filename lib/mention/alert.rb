@@ -2,6 +2,8 @@ module Mention
   class Alert
     include Virtus.model
 
+    SOURCES = ["web","facebook","twitter","news","blogs","videos","forums","images"].freeze
+
     attribute :id, String
     attribute :name, String
     attribute :primary_keyword, String
@@ -11,7 +13,7 @@ module Mention
     attribute :noise_detection, Boolean, default: true
     attribute :sentiment_analysis, Boolean, default: false
     attribute :languages, Array[String], default: ['en']
-    attribute :sources, Array[String], default: ["web","facebook","twitter","news","blogs","videos","forums","images"]
+    attribute :sources, Array[String], default: SOURCES
     attribute :shares, Array[Share], default: []
 
     def remove_from(account)
