@@ -40,6 +40,12 @@ module Mention
       connection.delete("/alerts/#{alert.id}/shares/#{share.id}")
     end
 
+    def update(alert)
+      creator = AlertCreator.new(connection, alert, :update)
+      @alerts = nil if creator.valid?
+      creator.created_alert
+    end
+
     def fetch_mentions(alert, params = {})
       raw_data = JSON.parse(connection.get("/alerts/#{alert.id}/mentions", params))
       MentionList.new(raw_data)

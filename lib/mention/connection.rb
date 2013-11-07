@@ -10,12 +10,18 @@ module Mention
     end
 
     def get(path = '', params = {})
-      url = params.empty? ? path : "#{path}?#{URI.encode_www_form params}"
+      url = params.empty? ? path : "#{path}?#{encode(params)}"
       request :get, uri.path + url, headers
     end
 
     def post(path, params, custom_headers = {})
       request :post, uri.path + path, params, headers.merge(custom_headers)
+    end
+
+    # proof of concept
+    def put(path, params, custom_headers = {})
+      response = http.send_request('PUT', uri.path + path, params, headers.merge(custom_headers))
+      unpack(response)
     end
 
     def delete(path)
@@ -44,6 +50,10 @@ module Mention
 
       def headers
          @headers ||= { 'Authorization' => "Bearer #{token}", "Accept" => "application/json", 'Accept-Encoding'=>'gzip, deflate' }
+      end
+
+      def encode(params)
+        URI.encode_www_form(params)
       end
   end
 end

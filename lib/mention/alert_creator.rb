@@ -1,7 +1,7 @@
 module Mention
   class AlertCreator
-    def initialize(connection, alert)
-      @connection, @alert = connection, alert
+    def initialize(connection, alert, mode = :create)
+      @connection, @alert, @mode = connection, alert, mode
     end
 
     def created_alert
@@ -14,20 +14,30 @@ module Mention
     end
 
     private
-    attr_reader :connection, :alert
+    attr_reader :connection, :alert, :mode
+
+    def create?
+      mode == :create
+    end
 
     def response
       @response ||= JSON.parse(http_response)
     end
 
     def http_response
-      @http_response ||= connection.post('/alerts', JSON.generate(request_params), 'Content-Type' => 'application/json')
+      @http_response ||= if create?
+        connection.post("/alerts", *params)
+      else
+        connection.put("/alerts/#{alert.id}", *params)
+      end
+    end
+
+    def params
+      [JSON.generate(request_params), 'Content-Type' => 'application/json']
     end
 
     def request_params
-      alert.attributes
-        .reject{|k,v| k == :id}
-        .reject{|k,v| k == :shares}
+      alert.attributes.reject { |k,v| k == :id || k == :shares }
     end
 
     def validate_response!
