@@ -25,6 +25,17 @@ module Mention
       account.fetch_mentions(self, params)
     end
 
+    def preferences(account)
+      account.alert_preferences(self)
+    end
+
+    def disable_notifications(account)
+      account.update_alert_preferences(self, {
+        "email_notification_frequency"   => "never",
+        "push_notification_frequency"    => "never",
+        "desktop_notification_frequency" => "never" })
+    end
+
     private
     def share_for(account)
       found = shares.find{|share| share.account_id}

@@ -46,6 +46,15 @@ module Mention
       creator.created_alert
     end
 
+    def update_alert_preferences(alert, params)
+      response = connection.put("/alerts/#{alert.id}/preferences", JSON.generate(params), 'Content-Type' => 'application/json')
+      JSON.parse(response)
+    end
+
+    def alert_preferences(alert)
+      JSON.parse(connection.get("/alerts/#{alert.id}/preferences"))
+    end
+
     def fetch_mentions(alert, params = {})
       raw_data = JSON.parse(connection.get("/alerts/#{alert.id}/mentions", params))
       MentionList.new(raw_data)
